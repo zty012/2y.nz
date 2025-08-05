@@ -61,7 +61,7 @@ function isComplex(obj: Record<string, any>): boolean {
 const okey = md5(encode(result));
 ```
 
-:::info
+:::note
 `okey` == `Object Key`
 :::
 
