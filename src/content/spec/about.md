@@ -1,5 +1,7 @@
 # 关于
 
+[![wakatime](https://wakatime.com/badge/user/86a2be0d-db46-485a-bd3b-216b991ccd83.svg)](https://wakatime.com/@86a2be0d-db46-485a-bd3b-216b991ccd83)
+
 姊妹网站[doge]: [2x.nz](https://2x.nz)
 
 本网站使用 Fuwari 构建
