@@ -4,7 +4,7 @@ published: 2025-08-05
 description: 神秘 Bug 居然是 Array.reduce() 导致的
 image: ""
 tags:
-  - 前端
+  - JS
   - Project Graph
 category: 随笔
 draft: false

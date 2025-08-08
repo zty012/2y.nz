@@ -5,6 +5,7 @@ description: 利用对象引用机制，压缩对象序列化后的数据，用�
 image: /img/serializer-ref.jpg
 tags:
   - Project Graph
+  - JS
 category: 原理
 draft: false
 lang: ""

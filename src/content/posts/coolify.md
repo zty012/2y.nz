@@ -6,7 +6,6 @@ image: ""
 tags:
   - Coolify
   - Next.js
-  - 前端
   - React
   - Linux
 category: 教程
