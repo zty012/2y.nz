@@ -48,4 +48,4 @@
 
 一开始部署了一个空白的博客模板
 
-::github{repo="timlrx/tailwind-nextjs-starter-blog"}
+::github{repo="netlify-templates/nextjs-blog-theme"}
