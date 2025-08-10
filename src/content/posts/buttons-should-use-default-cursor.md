@@ -24,6 +24,6 @@ lang: ""
 
 ## shadcn/ui
 
-在 shadcn/ui 的 Tailwind v4 中，将按钮的光标样式改为了默认
+在 shadcn/ui 的 Tailwind v4 版本中，将按钮的光标样式改为了默认
 
 [#6743](https://github.com/shadcn-ui/ui/issues/6843) 中至今还在讨论该决定
