@@ -5,7 +5,7 @@ description: 从历史的角度探讨为何按钮不应该使用手形光标，�
 image: ""
 tags:
   - UX
-category:
+category: 随笔
 draft: false
 lang: ""
 ---
