@@ -6,7 +6,7 @@ image: /img/serializer-ref.jpg
 tags:
   - Project Graph
   - JS
-category: 原理
+category: 技术
 draft: false
 lang: ""
 ---
