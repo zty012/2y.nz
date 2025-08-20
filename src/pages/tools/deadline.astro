@@ -1,0 +1,16 @@
+---
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import DeadlineCalculator from "../../components/DeadlineCalculator.svelte";
+---
+
+<MainGridLayout title="Deadline计算器" description="计算任务进度和每日完成量的工具">
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+        <div class="card-base z-10 px-9 py-6 relative w-full">
+            <h1 class="text-3xl font-bold mb-6 text-center">📅 Deadline计算器</h1>
+            <p class="text-gray-600 dark:text-gray-400 mb-8 text-center">
+                输入任务信息，计算每日所需完成量，提供多种进度方案
+            </p>
+            <DeadlineCalculator client:load />
+        </div>
+    </div>
+</MainGridLayout>
