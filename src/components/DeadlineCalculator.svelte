@@ -623,7 +623,7 @@
   }
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4 md:p-6">
+<div class="min-h-screen p-4 md:p-6">
   <div class="max-w-6xl mx-auto">
     <!-- 标题部分 -->
     <div class="text-center mb-8" in:fly={{ y: -50, duration: 600, easing: quintOut }}>
