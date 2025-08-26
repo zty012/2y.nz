@@ -1,4 +1,3 @@
-@import "./markdown.css";
 @tailwind components;
 
 @layer components {
