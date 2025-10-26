@@ -95,3 +95,7 @@ RAILS_ENV=production bundle exec rake admin:create
 ## 完成
 
 至此，Discourse 已经成功部署完成，可以通过浏览器访问 `http://forum.example.com` 来使用论坛了。
+
+## 配置 Github OAuth
+
+跟着[文档](https://meta.discourse.org/t/configure-github-login-for-discourse/13745)操作就行，但是注意 `Redirect URI` 不能用 `https://`，得写成类似 `http://forum.example.com/auth/github/callback`
