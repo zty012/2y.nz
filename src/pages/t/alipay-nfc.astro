@@ -1,0 +1,8 @@
+---
+import AlipayNfcComponent from "../../components/AlipayNfc.svelte";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+---
+
+<MainGridLayout title="Alipay NFC Tool" description="Write Alipay-compatible URLs to NFC tags">
+    <AlipayNfcComponent client:only="svelte" />
+</MainGridLayout>
