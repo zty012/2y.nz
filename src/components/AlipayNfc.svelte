@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { Html5QrcodeScanner } from "html5-qrcode";
+  import QRCode from 'qrcode';
+  import { onDestroy, onMount } from 'svelte';
 
   let url = '';
   let status = '';
@@ -7,6 +9,9 @@
   let isReading = false;
   let nfcSupported = false;
   let readRecords: any[] = [];
+  let showScanner = false;
+  let scanner: Html5QrcodeScanner | null = null;
+  let generatedQrCodeUrl = '';
 
   onMount(() => {
     if ('NDEFReader' in window) {
@@ -15,6 +20,40 @@
       status = 'Web NFC is not supported on this device/browser.';
     }
   });
+
+  onDestroy(() => {
+    if (scanner) {
+        try { scanner.clear(); } catch(e) {}
+    }
+  });
+
+  function onScanSuccess(decodedText: string, decodedResult: any) {
+    url = decodedText;
+    toggleScanner();
+  }
+
+  function toggleScanner() {
+    if (showScanner) {
+      showScanner = false;
+      if (scanner) {
+        try { scanner.clear(); } catch(e) {}
+        scanner = null;
+      }
+    } else {
+      showScanner = true;
+      setTimeout(() => {
+        if (!showScanner) return;
+        scanner = new Html5QrcodeScanner(
+          "reader",
+          { fps: 10, qrbox: { width: 250, height: 250 } },
+          /* verbose= */ false
+        );
+        scanner.render(onScanSuccess, (error) => {
+            // ignore errors
+        });
+      }, 100);
+    }
+  }
 
   async function writeNfc() {
     if (!nfcSupported) return;
@@ -62,7 +101,7 @@
       const ndef = new (window as any).NDEFReader();
       await ndef.scan();
 
-      ndef.onreading = (event: any) => {
+      ndef.onreading = async (event: any) => {
         const decoder = new TextDecoder();
         const records = event.message.records;
 
@@ -109,6 +148,17 @@
           };
         });
 
+        const firstExtracted = readRecords.find(r => r.extractedUrl);
+        if (firstExtracted) {
+            try {
+                generatedQrCodeUrl = await QRCode.toDataURL(firstExtracted.extractedUrl);
+            } catch (err) {
+                console.error(err);
+            }
+        } else {
+            generatedQrCodeUrl = '';
+        }
+
         status = `Read ${records.length} records from NFC tag.`;
         isReading = false; // Stop "reading" state after first successful read for UI feedback
       };
@@ -128,9 +178,8 @@
   <!-- Title -->
   <div class="text-center mb-6">
     <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent mb-2">
-      Alipay NFC Tool
+      支付宝碰一下标签工具
     </h1>
-    <p class="text-base text-gray-600 dark:text-gray-400">Write Alipay-compatible URLs to NFC tags</p>
   </div>
 
   <!-- Main Card -->
@@ -139,25 +188,34 @@
     {#if !nfcSupported}
       <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
         <strong class="font-bold">Error:</strong>
-        <span class="block sm:inline">Web NFC is not supported on this device or browser. Please use Chrome on Android.</span>
+        <span class="block sm:inline">当前浏览器不支持 Web NFC</span>
       </div>
     {/if}
 
     <!-- Input Section -->
     <div class="mb-6">
       <label for="urlInput" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-        Target URL
+        URL
       </label>
-      <input
-        id="urlInput"
-        type="text"
-        bind:value={url}
-        placeholder="https://example.com"
-        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      />
-      <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-        This URL will be wrapped in an Alipay scheme.
-      </p>
+      <div class="flex gap-2">
+        <input
+          id="urlInput"
+          type="text"
+          bind:value={url}
+          placeholder="https://example.com"
+          class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+        <button
+          on:click={toggleScanner}
+          class="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg transition-colors"
+        >
+          扫码
+        </button>
+      </div>
+
+      {#if showScanner}
+        <div id="reader" class="mt-4 w-full"></div>
+      {/if}
     </div>
 
     <!-- Actions -->
@@ -168,9 +226,9 @@
         class="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold rounded-lg shadow transition-colors flex items-center justify-center gap-2"
       >
         {#if isWriting}
-          <span class="animate-spin">↻</span> Writing...
+          写入中...
         {:else}
-          <span>✎</span> Write to Tag
+          写入
         {/if}
       </button>
 
@@ -180,9 +238,9 @@
         class="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold rounded-lg shadow transition-colors flex items-center justify-center gap-2"
       >
         {#if isReading}
-          <span class="animate-spin">↻</span> Reading...
+          请靠近 NFC 标签
         {:else}
-          <span>👀</span> Read Tag
+          读取
         {/if}
       </button>
     </div>
@@ -197,7 +255,7 @@
     <!-- Read Results -->
     {#if readRecords.length > 0}
       <div class="mt-6">
-        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-3">Read Results:</h3>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-3">标签数据</h3>
         <div class="space-y-3">
           {#each readRecords as record, i}
             <div class="p-3 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/30">
@@ -210,10 +268,15 @@
               <div class="break-all text-sm text-gray-800 dark:text-gray-200 font-mono mt-2">
                 {#if record.extractedUrl}
                   <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
-                    <span class="block text-xs text-gray-500 mb-1">Extracted URL:</span>
+                    <span class="block text-xs text-gray-500 mb-1">实际 URL</span>
                     <a href={record.extractedUrl} target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline break-all">
                       {record.extractedUrl}
                     </a>
+                    {#if generatedQrCodeUrl && i === readRecords.findIndex(r => r.extractedUrl)}
+                        <div class="mt-2">
+                            <img src={generatedQrCodeUrl} alt="QR Code" class="w-32 h-32" />
+                        </div>
+                    {/if}
                   </div>
                 {/if}
                 {record.data}
