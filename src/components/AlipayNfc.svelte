@@ -38,7 +38,7 @@
         },
         {
           recordType: "android.com:pkg",
-          data: "com.eg.android.AlipayGphone"
+          data: new TextEncoder().encode("com.eg.android.AlipayGphone")
         }
       ];
 
@@ -68,6 +68,8 @@
 
         readRecords = records.map((record: any) => {
           let data = '';
+          let extractedUrl = '';
+
           if (record.recordType === 'url') {
              data = decoder.decode(record.data);
              try {
@@ -78,7 +80,7 @@
                       const schemeObj = new URL(scheme);
                       const codeContent = schemeObj.searchParams.get('codeContent');
                       if (codeContent) {
-                         data += `\n\n(Extracted: ${codeContent})`;
+                         extractedUrl = codeContent;
                       }
                    }
                 }
@@ -102,7 +104,8 @@
             recordType: record.recordType,
             mediaType: record.mediaType,
             id: record.id,
-            data: data
+            data: data,
+            extractedUrl: extractedUrl
           };
         });
 
@@ -205,6 +208,14 @@
                 <span class="text-xs text-gray-500 dark:text-gray-400">{record.recordType}</span>
               </div>
               <div class="break-all text-sm text-gray-800 dark:text-gray-200 font-mono mt-2">
+                {#if record.extractedUrl}
+                  <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
+                    <span class="block text-xs text-gray-500 mb-1">Extracted URL:</span>
+                    <a href={record.extractedUrl} target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline break-all">
+                      {record.extractedUrl}
+                    </a>
+                  </div>
+                {/if}
                 {record.data}
               </div>
             </div>
