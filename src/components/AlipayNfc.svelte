@@ -180,6 +180,10 @@
     <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent mb-2">
       支付宝碰一下标签工具
     </h1>
+    <!-- 说明 -->
+    <p class="text-gray-600 dark:text-gray-300">
+      可以点击「扫码」按钮上传收款码，从而制作碰一下支付 NFC 标签。还可以将任意 URL 做成碰一下标签，比如上传停车费支付二维码从而做成碰一下付停车费等。
+    </p>
   </div>
 
   <!-- Main Card -->
