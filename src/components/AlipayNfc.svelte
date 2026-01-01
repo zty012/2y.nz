@@ -207,7 +207,7 @@
         />
         <button
           on:click={toggleScanner}
-          class="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg transition-colors"
+          class="px-4 py-2 bg-gray-200 dark:bg-gray-600 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg transition-colors"
         >
           扫码
         </button>
