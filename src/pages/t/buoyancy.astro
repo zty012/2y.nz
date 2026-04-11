@@ -1,0 +1,14 @@
+---
+import BuoyancySimulator from "../../components/BuoyancySimulator.svelte";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+---
+
+<MainGridLayout title="浮力模拟" description="模拟物体在液体中的受力情况和各参数对平衡的影响">
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+        <div class="card-base z-10 px-9 py-6 relative w-full">
+            <BuoyancySimulator client:load />
+        </div>
+    </div>
+</MainGridLayout>
+
+```
