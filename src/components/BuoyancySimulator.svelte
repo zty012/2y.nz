@@ -10,6 +10,7 @@
   let rho_obj = 600; // kg/m^3 (Wood)
   let h_liquid_total = 0.2; // m (Initial liquid depth)
   let h_container = 0.3; // m (Container height)
+  let w_container = 0.15; // m (Container width/diameter)
   
   // Scale Override & Lock
   let scale_override = 1.0; // Dynamic scale multiplier
@@ -20,6 +21,10 @@
   $: volume_obj = a_obj * b_obj * h_obj;
   $: mass_obj = volume_obj * rho_obj;
   $: weight_obj = mass_obj * g;
+  
+  // Container logic - Ensure container is at least as large as the object
+  $: effective_w_container = Math.max(w_container, Math.max(a_obj, b_obj) + 0.001);
+  $: container_base_area = effective_w_container * effective_w_container; 
   
   // Calculate equilibrium
   // F_buoyancy = Weight_obj
@@ -32,10 +37,10 @@
   $: is_floating = rho_obj <= rho_liquid;
   $: net_force = is_floating ? 0 : weight_obj - buoyancy_force;
 
-  // Actual liquid level considering displacement
-  // Assume container base area is roughly 3x object base area for visualization
-  $: container_base_area = a_obj * b_obj * 3; 
-  $: delta_h_liquid = v_submerged / container_base_area;
+  // Use a more realistic calculation: delta_h = V_submerged / (S_container - S_obj_base)
+  // This accounts for the space the object takes up in the container
+  $: free_surface_area = Math.max(0.000001, container_base_area - a_obj * b_obj);
+  $: delta_h_liquid = v_submerged / free_surface_area;
   $: h_liquid_potential = h_liquid_total + delta_h_liquid;
   $: is_overflowing = h_liquid_potential > h_container;
   $: h_liquid_actual = Math.min(h_liquid_potential, h_container);
@@ -92,8 +97,9 @@
     ctx.fillText(`${(rulerLengthValue * 100).toFixed(0)}cm`, rulerX + rulerWidthPx / 2, rulerY - 8);
 
     // UI drawing constants - ensure everything fits in canvas
+    // UI drawing constants - ensure everything fits in canvas
     const containerBottom = height - 50;
-    const containerWidth = width * 0.65; 
+    const containerWidth = effective_w_container * scale; 
     const containerLeft = (width - containerWidth) / 2 + 30; 
     const containerRight = containerLeft + containerWidth;
     const containerHeightPx = h_container * scale;
@@ -258,8 +264,14 @@
     draw();
   });
 
-  $: if (rho_liquid || g || a_obj || b_obj || h_obj || rho_obj || h_liquid_total || h_container || is_scale_locked || manual_scale) {
-    draw();
+  // 使用 $ 反应式声明，当任何参与计算的参数变化时，自动触发重绘
+  $: if (canvas && (rho_liquid !== undefined || rho_obj !== undefined || g !== undefined || a_obj !== undefined || b_obj !== undefined || h_obj !== undefined || h_liquid_total !== undefined || w_container !== undefined || h_container !== undefined || manual_scale !== undefined || is_scale_locked !== undefined)) {
+    // 使用 requestAnimationFrame 确保在浏览器重绘周期内执行，避免过于频繁或在某些情况下不生效
+    if (typeof requestAnimationFrame !== 'undefined') {
+      requestAnimationFrame(draw);
+    } else {
+      draw();
+    }
   }
 
   const liquidDensities = [
@@ -292,9 +304,9 @@
       <div class="space-y-2">
         <label class="block">
           <span class="text-sm font-medium">ρ_液 (kg/m³): {rho_liquid}</span>
-          <div class="flex gap-2 items-center mt-1">
-            <input type="range" bind:value={rho_liquid} min="100" max="20000" step="10" class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
-            <input type="number" bind:value={rho_liquid} step="10" class="w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
+          <div class="flex flex-col gap-1 mt-1">
+            <input type="range" bind:value={rho_liquid} min="100" max="20000" step="10" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+            <input type="number" bind:value={rho_liquid} step="10" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
           </div>
         </label>
         <div class="flex flex-wrap gap-2">
@@ -313,9 +325,9 @@
       <div class="space-y-2">
         <label class="block">
           <span class="text-sm font-medium">g (N/kg): {g}</span>
-          <div class="flex gap-2 items-center mt-1">
-            <input type="range" bind:value={g} min="0" max="30" step="0.1" class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
-            <input type="number" bind:value={g} step="0.1" class="w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
+          <div class="flex flex-col gap-1 mt-1">
+            <input type="range" bind:value={g} min="0" max="30" step="0.1" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+            <input type="number" bind:value={g} step="0.1" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
           </div>
         </label>
         <div class="flex flex-wrap gap-2">
@@ -329,9 +341,9 @@
       <div class="space-y-2">
         <label class="block">
           <span class="text-sm font-medium">ρ_物 (kg/m³): {rho_obj}</span>
-          <div class="flex gap-2 items-center mt-1">
-            <input type="range" bind:value={rho_obj} min="10" max="25000" step="10" class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
-            <input type="number" bind:value={rho_obj} step="10" class="w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
+          <div class="flex flex-col gap-1 mt-1">
+            <input type="range" bind:value={rho_obj} min="10" max="25000" step="10" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+            <input type="number" bind:value={rho_obj} step="10" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
           </div>
         </label>
         <div class="flex flex-wrap gap-2">
@@ -347,41 +359,28 @@
       </div>
 
       <!-- 液体深度与容器高度 -->
-      <div class="space-y-2">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <label class="block">
           <span class="text-sm font-medium">h_液 (m): {h_liquid_total}</span>
-          <div class="flex gap-2 items-center mt-1">
-            <input type="range" bind:value={h_liquid_total} min="0.01" max="1" step="0.01" class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
-            <input type="number" bind:value={h_liquid_total} step="0.01" class="w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
+          <div class="flex flex-col gap-1 mt-1">
+            <input type="range" bind:value={h_liquid_total} min="0.01" max="1" step="0.01" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+            <input type="number" bind:value={h_liquid_total} step="0.01" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
           </div>
         </label>
-      </div>
         
-      <div class="space-y-2">
         <label class="block">
           <span class="text-sm font-medium">h_容 (m): {h_container}</span>
-          <div class="flex gap-2 items-center mt-1">
-            <input type="range" bind:value={h_container} min="0.1" max="2" step="0.01" class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
-            <input type="number" bind:value={h_container} step="0.01" class="w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
+          <div class="flex flex-col gap-1 mt-1">
+            <input type="range" bind:value={h_container} min={Math.max(0.1, h_obj)} max="2" step="0.01" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+            <input type="number" bind:value={h_container} min={h_obj} step="0.01" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
           </div>
         </label>
-      </div>
 
-      <!-- 视觉缩放控制 -->
-      <div class="space-y-2 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-md border border-gray-200 dark:border-gray-700">
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-bold">比例尺</span>
-          <label class="flex items-center cursor-pointer gap-2">
-            <input type="checkbox" bind:checked={is_scale_locked} class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-            <span class="text-xs">锁定</span>
-          </label>
-        </div>
-        
         <label class="block">
-          <div class="flex gap-2 items-center mt-1">
-            <input type="range" bind:value={manual_scale} min="0.1" max="5" step="0.05" disabled={!is_scale_locked} class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 disabled:opacity-50" />
-            <input type="number" bind:value={manual_scale} step="0.05" disabled={!is_scale_locked} class="w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800 disabled:opacity-50" />
-            <span class="text-xs whitespace-nowrap">米 (m)</span>
+          <span class="text-sm font-medium">w_容 (m): {w_container}</span>
+          <div class="flex flex-col gap-1 mt-1">
+            <input type="range" bind:value={w_container} min={Math.max(a_obj, b_obj) + 0.001} max="1" step="0.01" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+            <input type="number" bind:value={w_container} min={Math.max(a_obj, b_obj) + 0.001} step="0.01" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
           </div>
         </label>
       </div>
@@ -404,6 +403,25 @@
           <span class="text-sm font-medium">h_物 (m): {h_obj}</span>
           <input type="range" bind:value={h_obj} min="0.005" max="0.5" step="0.005" class="w-full h-1 mt-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
           <input type="number" bind:value={h_obj} step="0.005" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800" />
+        </label>
+      </div>
+
+      <!-- 视觉缩放控制 -->
+      <div class="space-y-2 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-md border border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-bold">比例尺</span>
+          <label class="flex items-center cursor-pointer gap-2">
+            <input type="checkbox" bind:checked={is_scale_locked} class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+            <span class="text-xs">锁定</span>
+          </label>
+        </div>
+        
+        <label class="block">
+          <div class="flex gap-2 items-center mt-1">
+            <input type="range" bind:value={manual_scale} min="0.1" max="5" step="0.05" disabled={!is_scale_locked} class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 disabled:opacity-50" />
+            <input type="number" bind:value={manual_scale} step="0.05" disabled={!is_scale_locked} class="w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-800 disabled:opacity-50" />
+            <span class="text-xs whitespace-nowrap">米 (m)</span>
+          </div>
         </label>
       </div>
     </div>
