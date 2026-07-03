@@ -10,3 +10,521 @@ html > body[data-scroll-locked] {
   margin-right: 0px !important;
   --removed-body-scroll-bar-size: 0px !important;
 }
+
+@theme {
+  --font-sans:
+    "MiSans", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --background-image-avatar: linear-gradient(
+    137.85deg,
+    #aea298 2.49%,
+    #b2a294 26.24%,
+    #8590c1 49.09%,
+    #657ad4 63.71%,
+    #335ad0 97.51%
+  );
+}
+
+/* ── Time-based Accent Colors ── */
+
+:root {
+  --color-accent: #657ad4;
+  --color-accent-strong: #335ad0;
+  --color-accent-glow: rgba(101, 122, 212, 0.12);
+  --color-accent-gradient: linear-gradient(135deg, #657ad4, #335ad0);
+}
+
+[data-theme-time="day"] {
+  --color-accent: #b2a294;
+  --color-accent-strong: #8a7a6a;
+  --color-accent-glow: rgba(178, 162, 148, 0.12);
+  --color-accent-gradient: linear-gradient(135deg, #b2a294, #8a7a6a);
+}
+
+[data-theme-time="night"] {
+  --color-accent: #657ad4;
+  --color-accent-strong: #335ad0;
+  --color-accent-glow: rgba(101, 122, 212, 0.12);
+  --color-accent-gradient: linear-gradient(135deg, #657ad4, #335ad0);
+}
+
+/* ── Vertical Snap Scroll ── */
+
+.snap-container {
+  display: flex;
+  flex-direction: column;
+  scroll-snap-type: y mandatory;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: 100dvh;
+  width: 100vw;
+}
+
+.snap-container::-webkit-scrollbar {
+  display: none;
+}
+
+.snap-screen {
+  flex: 0 0 100dvh;
+  width: 100vw;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow-y: hidden;
+}
+
+/* ── Animations ── */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes float-glow {
+  0%,
+  100% {
+    transform: translateY(0);
+    box-shadow: 0 0 20px var(--color-accent-glow);
+  }
+  50% {
+    transform: translateY(-10px);
+    box-shadow: 0 0 40px var(--color-accent-glow);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes ping-large {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75%,
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes scroll-hint {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes scroll-dot-left {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateX(10px);
+    opacity: 0.8;
+  }
+}
+
+@keyframes scroll-dot-right {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateX(-10px);
+    opacity: 0.8;
+  }
+}
+
+/* ── Frosted Glass (毛玻璃) ── */
+
+.glass-panel {
+  z-index: 0;
+  backdrop-filter: blur(20px) saturate(1.3);
+  background-color: color-mix(
+    in srgb,
+    var(--color-accent) 4%,
+    rgba(0, 0, 0, 0.25)
+  );
+  border: 1px solid color-mix(in srgb, var(--color-accent) 6%, transparent);
+}
+
+.glass-panel-strong {
+  z-index: 0;
+  backdrop-filter: blur(24px) saturate(1.4);
+  background-color: color-mix(
+    in srgb,
+    var(--color-accent) 3%,
+    rgba(0, 0, 0, 0.35)
+  );
+  border: 1px solid color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+/* ── Shared content wrapper (applied over glass for contrast) ── */
+
+.content-over-glass {
+  z-index: 1;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-glow {
+  animation: float-glow 4s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s ease-out both;
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.7s ease-out both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.7s ease-out both;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.7s ease-out both;
+}
+
+.animate-scroll-hint {
+  animation: scroll-hint 2s ease-in-out infinite;
+}
+
+.animate-scroll-dot-left {
+  animation: scroll-dot-left 2.4s ease-in-out infinite;
+}
+
+.animate-scroll-dot-right {
+  animation: scroll-dot-right 2.4s ease-in-out infinite;
+}
+
+/* ── Animation Delays (for staggered children) ── */
+
+.delay-1 {
+  animation-delay: 0.1s;
+}
+.delay-2 {
+  animation-delay: 0.2s;
+}
+.delay-3 {
+  animation-delay: 0.3s;
+}
+.delay-4 {
+  animation-delay: 0.4s;
+}
+.delay-5 {
+  animation-delay: 0.5s;
+}
+.delay-6 {
+  animation-delay: 0.6s;
+}
+.delay-7 {
+  animation-delay: 0.7s;
+}
+.delay-8 {
+  animation-delay: 0.8s;
+}
+.delay-9 {
+  animation-delay: 0.9s;
+}
+
+/* ── Newspaper Styles ── */
+
+.newspaper-masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 2px solid var(--color-accent);
+}
+
+.newspaper-masthead-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.newspaper-masthead-meta {
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.35;
+}
+
+.newspaper-rule {
+  height: 1px;
+  width: 100%;
+  opacity: 0.15;
+  background: var(--color-accent);
+  margin: 0.75rem 0;
+}
+
+.newspaper-rule-thick {
+  height: 2px;
+  width: 100%;
+  opacity: 0.12;
+  background: var(--color-accent);
+  margin: 0.5rem 0;
+}
+
+.newspaper-folio {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  margin-top: auto;
+  border-top: 1px solid var(--color-accent);
+  opacity: 0.3;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── Bento Card Styles ── */
+
+.bento-card {
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.bento-card-subtle {
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  background: var(--color-accent-glow);
+  border: 1px solid transparent;
+}
+
+.bento-card-subtle:hover {
+  border-color: var(--color-accent);
+}
+
+.bento-card-outlined {
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  border: 1px solid var(--color-accent);
+}
+
+.bento-card-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  opacity: 0.35;
+}
+
+/* ── Background Decorations ── */
+
+.bg-ornament-corner {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.08;
+}
+
+.bg-ornament-corner::before,
+.bg-ornament-corner::after {
+  content: "";
+  position: absolute;
+  background: var(--color-accent);
+}
+
+.bg-ornament-top-right {
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+}
+
+.bg-ornament-top-right::before {
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+}
+
+.bg-ornament-top-right::after {
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 1px;
+}
+
+.bg-ornament-bottom-left {
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 60px;
+}
+
+.bg-ornament-bottom-left::before {
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+}
+
+.bg-ornament-bottom-left::after {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+}
+
+.bg-column-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  opacity: 0.04;
+  background: var(--color-accent);
+}
+
+.bg-column-line-1 {
+  left: 8.333%;
+}
+.bg-column-line-2 {
+  left: 16.666%;
+}
+.bg-column-line-3 {
+  left: 25%;
+}
+.bg-column-line-4 {
+  left: 33.333%;
+}
+.bg-column-line-5 {
+  left: 41.666%;
+}
+.bg-column-line-6 {
+  left: 50%;
+}
+.bg-column-line-7 {
+  left: 58.333%;
+}
+.bg-column-line-8 {
+  left: 66.666%;
+}
+.bg-column-line-9 {
+  left: 75%;
+}
+.bg-column-line-10 {
+  left: 83.333%;
+}
+.bg-column-line-11 {
+  left: 91.666%;
+}
+
+.bg-watermark-deco {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.025;
+  color: var(--color-accent-strong);
+  z-index: 0;
+}
+
+/* ── Decorative Stamp ── */
+
+.bg-stamp {
+  position: absolute;
+  pointer-events: none;
+  border: 2px solid var(--color-accent);
+  opacity: 0.06;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  padding: 0.5rem 1rem;
+  transform: rotate(-6deg);
+}
+
+/* ── Scanline Texture ── */
+
+.bg-scanline {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(0, 0, 0, 0.02) 1px,
+    rgba(0, 0, 0, 0.02) 2px
+  );
+}
+
+[data-theme-time="night"] .bg-scanline {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(255, 255, 255, 0.015) 1px,
+    rgba(255, 255, 255, 0.015) 2px
+  );
+}
