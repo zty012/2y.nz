@@ -21,8 +21,8 @@ function GitHubIcon({ className }: { className?: string }) {
 }
 
 const latestPosts = [
-  { title: "Hello World", href: "/docs", date: "2026-06-28" },
-  { title: "Test Page", href: "/docs/test", date: "2026-06-25" },
+  { title: "Hello World", href: "/", date: "2026-06-28" },
+  { title: "Test Page", href: "/test", date: "2026-06-25" },
 ];
 
 const tools = ["Arch Linux", "ESP-IDF", "Next.js", "TypeScript"];

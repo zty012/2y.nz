@@ -13,7 +13,7 @@ import { createRelativeLink } from "fumadocs-ui/mdx";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
+export default async function Page(props: PageProps<"/[...slug]">) {
   const params = await props.params;
   const page = source.getPage(params.slug);
   if (!page) notFound();
@@ -27,7 +27,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       <DocsDescription className="mb-0">
         {page.data.description}
       </DocsDescription>
-      <div className="flex flex-row gap-2 items-center border-b pb-6">
+      <div className="flex flex-row items-center gap-2 border-b pb-6">
         <MarkdownCopyButton markdownUrl={markdownUrl} />
         <ViewOptionsPopover
           markdownUrl={markdownUrl}
@@ -51,7 +51,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(
-  props: PageProps<"/docs/[[...slug]]">,
+  props: PageProps<"/[...slug]">,
 ): Promise<Metadata> {
   const params = await props.params;
   const page = source.getPage(params.slug);
