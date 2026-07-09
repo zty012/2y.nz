@@ -88,11 +88,11 @@ export function ScreenIntro({
       <div className="bg-scanline pointer-events-none absolute inset-0 opacity-40" />
       {/* Glow orbs */}
       <div
-        className="pointer-events-none absolute -top-48 -right-48 h-[500px] w-[500px] rounded-full opacity-[0.05] blur-3xl"
+        className="pointer-events-none absolute -top-48 -right-48 size-125 rounded-full opacity-[0.05] blur-3xl"
         style={{ background: "var(--color-accent-gradient)" }}
       />
       <div
-        className="pointer-events-none absolute -bottom-48 -left-48 h-[400px] w-[400px] rounded-full opacity-[0.03] blur-3xl"
+        className="pointer-events-none absolute -bottom-48 -left-48 size-100 rounded-full opacity-[0.03] blur-3xl"
         style={{ background: "var(--color-accent-gradient)" }}
       />
       {/* Column guide lines - newspaper feel */}
@@ -177,11 +177,11 @@ export function ScreenIntro({
         {/* ════════════════
            ROW 1: HEADLINE + AVATAR (two cards)
            ════════════════ */}
-        <div className="flex flex-col gap-3 sm:min-h-0 sm:flex-[2] sm:flex-row">
+        <div className="flex flex-col gap-3 sm:min-h-0 sm:flex-2 sm:flex-row">
           {/* Headline card */}
           <div
             className={cn(
-              "glass-panel flex flex-col justify-center rounded-2xl px-6 sm:flex-[2]",
+              "glass-panel flex flex-col justify-center rounded-2xl px-6 sm:flex-2",
               "transition-all duration-700",
               visible
                 ? "translate-x-0 opacity-100"
@@ -211,7 +211,7 @@ export function ScreenIntro({
            ════════════════ */}
         <div className="flex flex-col gap-3 sm:min-h-0 sm:flex-[3.5] sm:flex-row">
           {/* ── Left column ── */}
-          <div className="flex flex-col gap-3 sm:flex-[2]">
+          <div className="flex flex-col gap-3 sm:flex-2">
             {/* Bio card */}
             <div
               className={cn(
