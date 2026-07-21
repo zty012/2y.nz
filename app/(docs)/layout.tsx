@@ -4,15 +4,7 @@ import { DocsLayout } from "fumadocs-ui/layouts/docs";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <DocsLayout
-      tree={source.getPageTree()}
-      sidebar={{
-        components: {
-          Item,
-        },
-      }}
-      {...baseOptions()}
-    >
+    <DocsLayout tree={source.getPageTree()} {...baseOptions()}>
       {children}
     </DocsLayout>
   );

@@ -199,9 +199,9 @@ export function ScreenProject({
             </a>
           )}
           <a
-            href={project.githubUrl ?? "#"}
-            target="_blank"
-            rel="noreferrer"
+            href={project.href ?? project.githubUrl ?? "#"}
+            target={project.href ? undefined : "_blank"}
+            rel={project.href ? undefined : "noreferrer"}
             className="flex items-center gap-1.5 rounded-lg border px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all duration-300 hover:scale-105"
             style={{
               borderColor: "var(--color-accent)",
@@ -209,7 +209,7 @@ export function ScreenProject({
             }}
           >
             <ExternalLink className="h-3.5 w-3.5" />
-            <span>在线演示</span>
+            <span>{project.href ? "了解更多" : "在线演示"}</span>
           </a>
         </div>
       </div>

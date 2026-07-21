@@ -263,7 +263,7 @@ export function ScreenIntro({
                     zz — 基于 ESP32-S3 的手表
                   </li>
                   <li className="list-inside list-disc">
-                    zx — 基于 ESP32-S3 的手机
+                    zx — 基于 ESP32-S3 的客制化桌面仪表盘
                   </li>
                 </ul>
               </div>
