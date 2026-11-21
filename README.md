@@ -5,14 +5,11 @@ This is a Next.js application generated with
 
 It is a Next.js app with [Static Export](https://nextjs.org/docs/app/guides/static-exports) configured.
 
-Run development server:
+Install dependencies with [Bun](https://bun.sh/) and start the development server:
 
 ```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
+bun install
+bun run dev
 ```
 
 Open http://localhost:3000 with your browser to see the result.
