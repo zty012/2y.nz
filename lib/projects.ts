@@ -2,7 +2,7 @@ export interface Project {
   title: string;
   description: string;
   tags: string[];
-  preview: "graph" | "device" | "serial";
+  preview: "graph" | "device" | "serial" | "font";
   category: string;
   githubUrl?: string;
   href?: string;
@@ -37,5 +37,15 @@ export const projects: Project[] = [
     category: "SOFTWARE / 串口工具",
     githubUrl: "https://github.com/zty012/guart",
     href: "https://guart.2y.nz",
+  },
+  {
+    title: "FontMask",
+    description:
+      "在浏览器中批量替换 TrueType 字体名称或字形，支持 TTF 和 TTC，字体文件无需上传。",
+    tags: ["SolidJS", "Vite", "Tailwind CSS"],
+    preview: "font",
+    category: "SOFTWARE / 字体工具",
+    githubUrl: "https://github.com/zty012/fontmask",
+    href: "https://fontmask.2y.nz",
   },
 ];

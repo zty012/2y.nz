@@ -9,6 +9,7 @@ import {
   Cpu,
   GitBranch,
   Heart,
+  Type,
 } from "lucide-react";
 import { projects } from "@/lib/projects";
 import guartImage from "@/public/guart.png";
@@ -244,10 +245,56 @@ function SerialPreview() {
   );
 }
 
+function FontPreview() {
+  return (
+    <div className="home-project-art home-graph-art" aria-hidden="true">
+      <span className="home-art-label">TRUETYPE GLYPH SWAP</span>
+      <svg viewBox="0 0 520 250" fill="none">
+        <path
+          d="M85 155H435M85 84H435"
+          stroke="#bba77e"
+          strokeOpacity="0.3"
+          strokeDasharray="4 5"
+        />
+        <text
+          x="165"
+          y="155"
+          fill="#ded0ae"
+          fontFamily="serif"
+          fontSize="94"
+          textAnchor="middle"
+        >
+          Aa
+        </text>
+        <path
+          d="M236 117H284M274 107L284 117L274 127"
+          stroke="#bba77e"
+          strokeWidth="2"
+        />
+        <text
+          x="355"
+          y="155"
+          fill="#a6b994"
+          fontFamily="sans-serif"
+          fontWeight="700"
+          fontSize="94"
+          textAnchor="middle"
+        >
+          Aa
+        </text>
+      </svg>
+      <span className="home-art-corner">
+        <Type size={14} /> FONTMASK · TTF / TTC
+      </span>
+    </div>
+  );
+}
+
 const projectPreviews = {
   graph: GraphPreview,
   device: DevicePreview,
   serial: SerialPreview,
+  font: FontPreview,
 };
 
 export default function HomePage() {
